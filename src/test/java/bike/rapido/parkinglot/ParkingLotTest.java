@@ -8,7 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class ParkingLotTest {
 
     @Test
-    public void driverCanParkAtFirstSlotIfAvailableSlotsAreMoreThan1() {
+    public void canDriverParkIfTotalSlotsAreMoreThan1() {
         int totalSlots = 10;
         new ParkingSpace(totalSlots);
         Driver driver = new Driver();
@@ -19,7 +19,7 @@ public class ParkingLotTest {
     }
 
     @Test
-    public void canDriverParkAtSecondSlotIfTotalSlotsAre1() {
+    public void canSecondDriverParkIfTotalSlotsAre1() {
         int totalSlots = 1;
         new ParkingSpace(totalSlots);
 
