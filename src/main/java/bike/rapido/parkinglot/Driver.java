@@ -7,8 +7,12 @@ class ParkingSpace {
         availableSlots = totalSlots;
     }
 
-    public static  void decrementSlots(){
+    private static  void decrementSlots(){
         availableSlots -= 1;
+    }
+
+    public static void parkACar(){
+        decrementSlots();
     }
     public static boolean isAvailable() {
         if(availableSlots > 0){
@@ -22,7 +26,7 @@ class ParkingSpace {
 public class Driver {
     public boolean checkAvailabilityAndPark() {
         if(ParkingSpace.isAvailable()) {
-            ParkingSpace.decrementSlots();
+            ParkingSpace.parkACar();
             return true;
         } else {
             return false;
