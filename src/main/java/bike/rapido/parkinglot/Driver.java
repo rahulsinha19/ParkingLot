@@ -1,29 +1,28 @@
 package bike.rapido.parkinglot;
 
-import java.util.HashMap;
-
 class ParkingSpace {
-    HashMap<String, Boolean> data = new HashMap<>();
+    private static int availableSlots;
 
-    public boolean isEmpty(String spaceId) {
-        if(data.get(spaceId) == null) {
-            return true;
-        } else {
-            return false;
-        }
+    public ParkingSpace(int totalSlots) {
+        availableSlots = totalSlots;
     }
 
-    public void add(String spaceId) {
-        data.put(spaceId, true);
+    public static  void decrementSlots(){
+        availableSlots -= 1;
+    }
+    public static boolean isAvailable() {
+        if(availableSlots > 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
 
 public class Driver {
-    ParkingSpace parkingSpace = new ParkingSpace();
-
-    public boolean park(String spaceId) {
-        if(parkingSpace.isEmpty(spaceId)) {
-            parkingSpace.add(spaceId);
+    public boolean checkAvailabilityAndPark() {
+        if(ParkingSpace.isAvailable()) {
+            ParkingSpace.decrementSlots();
             return true;
         } else {
             return false;

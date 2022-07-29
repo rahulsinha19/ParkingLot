@@ -6,31 +6,27 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ParkingLotTest {
+
     @Test
-    public void whetherTheDriverCanParkAt201() {
-        String spaceId = "201";
+    public void driverCanParkAtFirstSlotIfAvailableSlotsAreMoreThan1() {
+        int totalSlots = 10;
+        new ParkingSpace(totalSlots);
+        Driver driver = new Driver();
 
-        boolean isParkingSpaceAvailable = new Driver().park(spaceId);
+        boolean hasDriverParked = driver.checkAvailabilityAndPark();
 
-        assertThat(isParkingSpaceAvailable, is(true));
+        assertThat(hasDriverParked, is(true));
     }
 
     @Test
-    public void whetherAnotherDriverCanParkAt201() {
-        String spaceId = "201";
+    public void canDriverParkAtSecondSlotIfTotalSlotsAre1() {
+        int totalSlots = 1;
+        new ParkingSpace(totalSlots);
 
-        boolean isParkingSpaceAvailable = new Driver().park(spaceId);
+        new Driver().checkAvailabilityAndPark();
 
-        assertThat(isParkingSpaceAvailable, is(true));
+        boolean hasDriverParked = new Driver().checkAvailabilityAndPark();
+
+        assertThat(hasDriverParked, is(false));
     }
-
-
-    @Test
-    public void whetherTheDriverCanParkAt567() {
-        String spaceId = "567";
-
-        boolean isParkingSpaceAvailable = new Driver().park(spaceId);
-
-        assertThat(isParkingSpaceAvailable, is(true));
-    } 
 }
