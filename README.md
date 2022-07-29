@@ -1,2 +1,2 @@
 Parking Lot
-Where the driver can park
+Where the driver can park his car
