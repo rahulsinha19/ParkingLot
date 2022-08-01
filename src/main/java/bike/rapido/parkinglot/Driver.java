@@ -5,8 +5,8 @@ class ParkingSpace {
     private static int totalSlots;
 
     public ParkingSpace(int totalSlots) {
-        this.availableSlots = totalSlots;
-        this.totalSlots = totalSlots;
+        availableSlots = totalSlots;
+        ParkingSpace.totalSlots = totalSlots;
 
     }
 
@@ -39,6 +39,9 @@ class ParkingSpace {
         incrementSlots();
     }
 
+    public boolean isFull() {
+        return availableSlots == 0;
+    }
 }
 
 public class Driver {
@@ -51,7 +54,7 @@ public class Driver {
         }
     }
 
-    public boolean unPark() {
+    public boolean unParkTheCar() {
         if(ParkingSpace.isEmpty()){
             return false;
         }else {
