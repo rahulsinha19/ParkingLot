@@ -76,4 +76,28 @@ public class ParkingLotTest {
 
         assertThat(signBoard, is("NOT FULL"));
     }
+
+    @Test
+    public void airportSecurityPersonalShouldRedirectTheSecurityStaffIfParkingLotIsFull() {
+        int totalSlots = 1;
+
+        ParkingSpace parkingSpace = new ParkingSpace(totalSlots);
+        new Driver().checkAvailabilityAndPark();
+        AirportSecurityPersonal airportSecurityPersonal = new AirportSecurityPersonal(parkingSpace);
+        boolean hasRedirectedTheSecurityStaff = airportSecurityPersonal.redirectSecurityStaff();
+
+        assertThat(hasRedirectedTheSecurityStaff, is(true));
+    }
+
+    @Test
+    public void airportSecurityPersonalShouldNotRedirectTheSecurityStaffIfParkingLotIsNotFull() {
+        int totalSlots = 2;
+
+        ParkingSpace parkingSpace = new ParkingSpace(totalSlots);
+        new Driver().checkAvailabilityAndPark();
+        AirportSecurityPersonal airportSecurityPersonal = new AirportSecurityPersonal(parkingSpace);
+        boolean hasRedirectedTheSecurityStaff = airportSecurityPersonal.redirectSecurityStaff();
+
+        assertThat(hasRedirectedTheSecurityStaff, is(false));
+    }
 }
