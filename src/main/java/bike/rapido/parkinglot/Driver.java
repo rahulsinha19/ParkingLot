@@ -6,17 +6,22 @@ class ParkingSpace {
     private static int availableSlots;
     private static int totalSlots;
 
-    private static ArrayList<Observer> registeredObservers;
+    private static ArrayList<Observer> registeredObserversForNotifyingLotIsFull;
+    private static ArrayList<Observer> registeredObserversForNotifyingLotHasSpaceAgain;
 
-    public static void  addObserver(Observer observer){
-        registeredObservers.add(observer);
+
+    public static void registerForNotifyingLotIsFull(Observer observer){
+        registeredObserversForNotifyingLotIsFull.add(observer);
     }
-
+    public static void registerForNotifyingWhenLotHasSpaceAgain(ParkingLotOwner parkingLotOwner) {
+        registeredObserversForNotifyingLotHasSpaceAgain.add(parkingLotOwner);
+    }
     public ParkingSpace(int totalSlots) {
-        registeredObservers = new ArrayList<>();
         availableSlots = totalSlots;
         ParkingSpace.totalSlots = totalSlots;
 
+        registeredObserversForNotifyingLotIsFull = new ArrayList<>();
+        registeredObserversForNotifyingLotHasSpaceAgain = new ArrayList<>();
     }
 
     private static  void decrementSlots(){
@@ -44,23 +49,39 @@ class ParkingSpace {
     public static void parkACar(){
         decrementSlots();
         if(isFull()){
-            notifyObservers();
+            notifyObserversWhenLotIsFull();
         }
     }
 
-    static void notifyObservers() {
-        for (Observer ob: registeredObservers){
-            ob.notifyObserver();
+    static void notifyObserversWhenLotIsFull() {
+        for (Observer observer: registeredObserversForNotifyingLotIsFull){
+            observer.notifyObserverWhenLotIsFull();
+        }
+    }
+
+    static void notifyObserversWhenLotHasSpaceAgain(){
+        System.out.println(registeredObserversForNotifyingLotHasSpaceAgain.get(0));
+        for(Observer observer: registeredObserversForNotifyingLotHasSpaceAgain){
+
+            observer.notifyObserverWhenLotHasSpaceAgain();
         }
     }
 
     public static void unParkACar() {
-        incrementSlots();
+        if(isFull()) {
+
+            incrementSlots();
+            notifyObserversWhenLotHasSpaceAgain();
+        }else {
+            incrementSlots();
+        }
     }
 
     public static  boolean isFull() {
         return availableSlots == 0;
     }
+
+
 }
 
 public class Driver {

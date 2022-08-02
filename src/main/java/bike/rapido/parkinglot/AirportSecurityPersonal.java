@@ -2,9 +2,6 @@ package bike.rapido.parkinglot;
 
 public class AirportSecurityPersonal implements Observer {
     private boolean hasSecurityPersonalNotified = false;
-    public AirportSecurityPersonal() {
-        register();
-    }
 
     public void redirectSecurityStaff() {
         this.hasSecurityPersonalNotified = true;
@@ -15,12 +12,11 @@ public class AirportSecurityPersonal implements Observer {
     }
 
     @Override
-    public void register() {
-        ParkingSpace.addObserver(this);
+    public void notifyObserverWhenLotIsFull() {
+        redirectSecurityStaff();
     }
 
     @Override
-    public void notifyObserver() {
-        redirectSecurityStaff();
+    public void notifyObserverWhenLotHasSpaceAgain() {
     }
 }

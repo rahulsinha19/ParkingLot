@@ -1,28 +1,30 @@
 package bike.rapido.parkinglot;
 
 public class ParkingLotOwner implements Observer{
-    String signBoard;
-    private boolean hasOwnerNotified = false;
-    public ParkingLotOwner() {
-        register();
+    private String signBoard;
+
+    public void setSignBoard(String signBoard) {
+        this.signBoard = signBoard;
     }
 
-    public boolean isOwnerNotified() {
-        return hasOwnerNotified;
+    public String getSignBoard() {
+        return signBoard;
     }
 
     public void putFullSignBoard() {
-        this.hasOwnerNotified = true;
-        this.signBoard = "FULL";
+        setSignBoard("FULL");
     }
 
     @Override
-    public void register() {
-        ParkingSpace.addObserver(this);
-    }
-
-    @Override
-    public void notifyObserver() {
+    public void notifyObserverWhenLotIsFull() {
         putFullSignBoard();
+    }
+    private void removeFullSignBoard() {
+        setSignBoard(null);
+    }
+
+    @Override
+    public void notifyObserverWhenLotHasSpaceAgain() {
+        removeFullSignBoard();
     }
 }
