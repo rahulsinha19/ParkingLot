@@ -1,10 +1,19 @@
 package bike.rapido.parkinglot;
 
+import java.util.ArrayList;
+
 class ParkingSpace {
     private static int availableSlots;
     private static int totalSlots;
 
+    private static ArrayList<Observer> registeredObservers;
+
+    public static void  addObserver(Observer observer){
+        registeredObservers.add(observer);
+    }
+
     public ParkingSpace(int totalSlots) {
+        registeredObservers = new ArrayList<>();
         availableSlots = totalSlots;
         ParkingSpace.totalSlots = totalSlots;
 
@@ -34,12 +43,22 @@ class ParkingSpace {
     }
     public static void parkACar(){
         decrementSlots();
+        if(isFull()){
+            notifyObservers();
+        }
     }
+
+    static void notifyObservers() {
+        for (Observer ob: registeredObservers){
+            ob.notifyObserver();
+        }
+    }
+
     public static void unParkACar() {
         incrementSlots();
     }
 
-    public boolean isFull() {
+    public static  boolean isFull() {
         return availableSlots == 0;
     }
 }

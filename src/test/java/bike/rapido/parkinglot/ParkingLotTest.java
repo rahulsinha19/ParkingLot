@@ -55,49 +55,56 @@ public class ParkingLotTest {
     }
 
     @Test
-    public void ownerShouldPutFullSignBoardIfParkingLotIsFull() {
+    public void notifyOwnerIfParkingLotIsFull() {
         int totalSlots = 1;
 
-        ParkingSpace parkingSpace = new ParkingSpace(totalSlots);
+        new ParkingSpace(totalSlots);
+        ParkingLotOwner parkingLotOwner = new ParkingLotOwner();
         new Driver().checkAvailabilityAndPark();
-        ParkingLotOwner parkingLotOwner = new ParkingLotOwner(parkingSpace);
-        String signBoard = parkingLotOwner.putSignBoard();
 
-        assertThat(signBoard, is("FULL"));
-    }
-    @Test
-    public void ownerShouldPutNotFullSignBoardIfParkingLotIsNotFull() {
-        int totalSlots = 2;
 
-        ParkingSpace parkingSpace = new ParkingSpace(totalSlots);
-        new Driver().checkAvailabilityAndPark();
-        ParkingLotOwner parkingLotOwner = new ParkingLotOwner(parkingSpace);
-        String signBoard = parkingLotOwner.putSignBoard();
+        boolean hasOwnerNotified = parkingLotOwner.isOwnerNotified();
 
-        assertThat(signBoard, is("NOT FULL"));
+        assertThat(hasOwnerNotified, is(true));
     }
 
     @Test
-    public void airportSecurityPersonalShouldRedirectTheSecurityStaffIfParkingLotIsFull() {
-        int totalSlots = 1;
+    public void doNotNotifyOwnerIfParkingLotIsNotFull() {
+        int totalSlots = 5;
 
-        ParkingSpace parkingSpace = new ParkingSpace(totalSlots);
+        new ParkingSpace(totalSlots);
+        ParkingLotOwner parkingLotOwner = new ParkingLotOwner();
         new Driver().checkAvailabilityAndPark();
-        AirportSecurityPersonal airportSecurityPersonal = new AirportSecurityPersonal(parkingSpace);
-        boolean hasRedirectedTheSecurityStaff = airportSecurityPersonal.redirectSecurityStaff();
 
-        assertThat(hasRedirectedTheSecurityStaff, is(true));
+
+        boolean hasOwnerNotified = parkingLotOwner.isOwnerNotified();
+
+        assertThat(hasOwnerNotified, is(false));
     }
 
     @Test
-    public void airportSecurityPersonalShouldNotRedirectTheSecurityStaffIfParkingLotIsNotFull() {
-        int totalSlots = 2;
+    public void notifyAirportSecurityPersonalIfParkingLotIsFull() {
+        int totalSlots =1;
 
-        ParkingSpace parkingSpace = new ParkingSpace(totalSlots);
+        new ParkingSpace(totalSlots);
+        AirportSecurityPersonal airportSecurityPersonal = new AirportSecurityPersonal();
         new Driver().checkAvailabilityAndPark();
-        AirportSecurityPersonal airportSecurityPersonal = new AirportSecurityPersonal(parkingSpace);
-        boolean hasRedirectedTheSecurityStaff = airportSecurityPersonal.redirectSecurityStaff();
 
-        assertThat(hasRedirectedTheSecurityStaff, is(false));
+        boolean hasSecurityPersonalNotified = airportSecurityPersonal.isSecurityPersonalNotified();
+
+        assertThat(hasSecurityPersonalNotified, is(true));
+    }
+
+    @Test
+    public void doNotNotifyAirportSecurityPersonalIfParkingLotIsNotFull() {
+        int totalSlots =5;
+
+        new ParkingSpace(totalSlots);
+        AirportSecurityPersonal airportSecurityPersonal = new AirportSecurityPersonal();
+        new Driver().checkAvailabilityAndPark();
+
+        boolean hasSecurityPersonalNotified = airportSecurityPersonal.isSecurityPersonalNotified();
+
+        assertThat(hasSecurityPersonalNotified, is(false));
     }
 }

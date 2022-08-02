@@ -1,17 +1,26 @@
 package bike.rapido.parkinglot;
 
-public class AirportSecurityPersonal {
-    private final ParkingSpace parkingSpace;
-    public AirportSecurityPersonal(ParkingSpace parkingSpace) {
-        this.parkingSpace = parkingSpace;
+public class AirportSecurityPersonal implements Observer {
+    private boolean hasSecurityPersonalNotified = false;
+    public AirportSecurityPersonal() {
+        register();
     }
 
+    public void redirectSecurityStaff() {
+        this.hasSecurityPersonalNotified = true;
+    }
 
-    public boolean redirectSecurityStaff() {
-        if(parkingSpace.isFull()) {
-            return true;
-        } else {
-            return false;
-        }
+    public boolean isSecurityPersonalNotified() {
+        return this.hasSecurityPersonalNotified;
+    }
+
+    @Override
+    public void register() {
+        ParkingSpace.addObserver(this);
+    }
+
+    @Override
+    public void notifyObserver() {
+        redirectSecurityStaff();
     }
 }
