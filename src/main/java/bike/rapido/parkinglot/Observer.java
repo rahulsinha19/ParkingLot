@@ -1,7 +1,7 @@
 package bike.rapido.parkinglot;
 
 public interface Observer {
-    void notifyObserverWhenLotIsFull();
+	void notifyObserverWhenLotIsFull();
 
-    void notifyObserverWhenLotHasSpaceAgain();
+	void notifyObserverWhenLotHasSpaceAgain();
 }

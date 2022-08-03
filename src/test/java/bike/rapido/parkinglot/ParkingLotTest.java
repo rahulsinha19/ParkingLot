@@ -1,129 +1,139 @@
 package bike.rapido.parkinglot;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ParkingLotTest {
-    @Test
-    public void shouldAllowDriverToParkIfAvailableSlotsAreMoreThan1() {
-        int totalSlots = 10;
+	final int TOTAL_PARKING_SLOTS = 10;
 
-        new ParkingSpace(totalSlots);
-        Driver driver = new Driver();
-        boolean hasDriverParked = driver.checkAvailabilityAndPark();
+	ParkingSlots parkingSlots;
+	Driver driver;
 
-        assertThat(hasDriverParked, is(true));
-    }
+	@Before
+	public void setUp() {
+		parkingSlots = new ParkingSlots(TOTAL_PARKING_SLOTS);
+		driver = new Driver(TOTAL_PARKING_SLOTS);
+	}
 
-    @Test
-    public void shouldNotAllowDriverToParkIfAvailableSlotsAre0() {
-        int totalSlots = 1;
+	@Test
+	public void shouldAllowDriverToParkIfAvailableSlotsAreMoreThan1() {
+		boolean hasDriverParked = driver.parkVehicle();
 
-        new ParkingSpace(totalSlots);
-        new Driver().checkAvailabilityAndPark();
-        boolean hasDriverParked = new Driver().checkAvailabilityAndPark();
+		assertThat(hasDriverParked, is(true));
+	}
 
-        assertThat(hasDriverParked, is(false));
-    }
+	@Test
+	public void shouldNotAllowDriverToParkIfAvailableSlotsAre0() {
+		int totalSlots = 0;
+		Driver driver = new Driver(totalSlots);
+		boolean hasDriverParked = driver.parkVehicle();
 
-    @Test
-    public void shouldAllowDriverToUnParkCar() {
-        int totalSlots = 10;
+		assertThat(hasDriverParked, is(false));
+	}
 
-        new ParkingSpace(totalSlots);
-        Driver driver = new Driver();
-        driver.checkAvailabilityAndPark();
-        boolean hasDriverUnParked = driver.unParkTheCar();
+	@Test
+	public void shouldAllowDriverToUnParkCar() {
+		int totalSlots = 10;
+		Driver driver = new Driver(totalSlots);
 
-        assertThat(hasDriverUnParked, is(true));
-    }
+		boolean hasDriverParked = driver.parkVehicle();
+		boolean hasDriverUnParked = driver.unParkVehicle();
 
-    @Test
-    public void shouldNotAllowDriverToUnParkFromEmptyParkingSpace() {
-        int totalSlots = 10;
+		assertTrue(hasDriverParked);
+		assertTrue(hasDriverUnParked);
+	}
 
-        new ParkingSpace(totalSlots);
-        Driver driver = new Driver();
-        driver.checkAvailabilityAndPark();
-        driver.unParkTheCar();
-        boolean hasAnotherDriverUnParked = new Driver().unParkTheCar();
+	@Test
+	public void shouldNotAllowDriverToUnParkFromEmptyParkingSpace() {
+		int totalSlots = 10;
+		Driver driver = new Driver(totalSlots);
 
-        assertThat(hasAnotherDriverUnParked, is(false));
-    }
+		boolean isParked = driver.parkVehicle();
+		boolean hasUnparked = driver.unParkVehicle();
+		boolean hasAnotherDriverUnParked = driver.unParkVehicle();
 
-    @Test
-    public void shouldNotifyOwnerIfParkingLotIsFull() {
-        int totalSlots = 1;
+		assertTrue(isParked);
+		assertTrue(hasUnparked);
+		assertFalse(hasAnotherDriverUnParked);
+	}
 
-        new ParkingSpace(totalSlots);
-        ParkingLotOwner parkingLotOwner = new ParkingLotOwner();
-        ParkingSpace.registerForNotifyingLotIsFull(parkingLotOwner);
-        new Driver().checkAvailabilityAndPark();
+	@Test
+	public void shouldNotifyOwnerIfParkingLotIsFull() {
+		int totalSlots = 1;
+		Driver driver = new Driver(totalSlots);
+		ParkingLotOwner parkingLotOwner = new ParkingLotOwner();
 
-        String signBoard = parkingLotOwner.getSignBoard();
+		ParkingSlots.registerForNotifyingLotIsFull(parkingLotOwner);
+		boolean isCarParked = driver.parkVehicle();
+		String signBoard = parkingLotOwner.getSignBoard();
 
-        assertThat(signBoard, is("FULL"));
-    }
+		assertTrue(isCarParked);
+		assertThat(signBoard, is("FULL"));
+	}
 
-    @Test
-    public void shouldNotNotifyOwnerIfParkingLotIsNotFull() {
-        int totalSlots = 5;
+	@Test
+	public void shouldNotNotifyOwnerIfParkingLotIsNotFull() {
+		ParkingLotOwner parkingLotOwner = new ParkingLotOwner();
+		ParkingSlots.registerForNotifyingLotIsFull(parkingLotOwner);
 
-        new ParkingSpace(totalSlots);
-        ParkingLotOwner parkingLotOwner = new ParkingLotOwner();
-        ParkingSpace.registerForNotifyingLotIsFull(parkingLotOwner);
-        new Driver().checkAvailabilityAndPark();
+		boolean isCarParked = driver.parkVehicle();
+		String signBoard = parkingLotOwner.getSignBoard();
 
-        String signBoard = parkingLotOwner.getSignBoard();
+		assertTrue(isCarParked);
+		assertNull(signBoard);
+	}
 
-        assertNull(signBoard);
-    }
+	@Test
+	public void shouldNotifyAirportSecurityPersonalIfParkingLotIsFull() {
+		int totalSlots = 1;
 
-    @Test
-    public void shouldNotifyAirportSecurityPersonalIfParkingLotIsFull() {
-        int totalSlots =1;
+		Driver driver = new Driver(totalSlots);
 
-        new ParkingSpace(totalSlots);
-        AirportSecurityPersonal airportSecurityPersonal = new AirportSecurityPersonal();
-        ParkingSpace.registerForNotifyingLotIsFull(airportSecurityPersonal);
-        new Driver().checkAvailabilityAndPark();
+		AirportSecurityPersonal airportSecurityPersonal = new AirportSecurityPersonal();
+		ParkingSlots.registerForNotifyingLotIsFull(airportSecurityPersonal);
 
-        boolean hasSecurityPersonalNotified = airportSecurityPersonal.isSecurityPersonalNotified();
+		boolean hasDriverParked = driver.parkVehicle();
 
-        assertThat(hasSecurityPersonalNotified, is(true));
-    }
+		boolean hasSecurityPersonalNotified = airportSecurityPersonal.isSecurityPersonalNotified();
 
-    @Test
-    public void shouldNotNotifyAirportSecurityPersonalIfParkingLotIsNotFull() {
-        int totalSlots =5;
+		assertTrue(hasDriverParked);
+		assertTrue(hasSecurityPersonalNotified);
+	}
 
-        new ParkingSpace(totalSlots);
-        AirportSecurityPersonal airportSecurityPersonal = new AirportSecurityPersonal();
-        ParkingSpace.registerForNotifyingLotIsFull(airportSecurityPersonal);
-        new Driver().checkAvailabilityAndPark();
+	@Test
+	public void shouldNotNotifyAirportSecurityPersonalIfParkingLotIsNotFull() {
+		AirportSecurityPersonal airportSecurityPersonal = new AirportSecurityPersonal();
 
-        boolean hasSecurityPersonalNotified = airportSecurityPersonal.isSecurityPersonalNotified();
+		ParkingSlots.registerForNotifyingLotIsFull(airportSecurityPersonal);
+		boolean isCarParked = driver.parkVehicle();
 
-        assertThat(hasSecurityPersonalNotified, is(false));
-    }
+		boolean hasSecurityPersonalNotified = airportSecurityPersonal.isSecurityPersonalNotified();
 
-    @Test
-    public void shouldNotifyOwnerIfParkingLotHasSpaceAgain() {
-        int totalSlots = 1;
+		assertTrue(isCarParked);
+		assertFalse(hasSecurityPersonalNotified);
+	}
 
-        new ParkingSpace(totalSlots);
-        ParkingLotOwner parkingLotOwner = new ParkingLotOwner();
-        ParkingSpace.registerForNotifyingWhenLotHasSpaceAgain(parkingLotOwner);
+	@Test
+	public void shouldNotifyOwnerIfParkingLotHasSpaceAgain() {
+		final int totalSlots = 1;
+		Driver driver = new Driver(totalSlots);
+		ParkingLotOwner parkingLotOwner = new ParkingLotOwner();
 
-        Driver driver = new Driver();
-        driver.checkAvailabilityAndPark();
-        driver.unParkTheCar();
+		ParkingSlots.registerForNotifyingWhenLotHasSpaceAgain(parkingLotOwner);
+		boolean isCarParkd = driver.parkVehicle();
+		boolean isCarUnparked = driver.unParkVehicle();
 
-        String signBoard = parkingLotOwner.getSignBoard();
+		String signBoard = parkingLotOwner.getSignBoard();
 
-        assertNull(signBoard);
-    }
+		assertTrue(isCarParkd);
+		assertTrue(isCarUnparked);
+		assertNull(signBoard);
+	}
 }
