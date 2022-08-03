@@ -7,21 +7,25 @@ public class Driver {
 		this.parkingSlots = new ParkingSlots(totalSlots);
 	}
 
-	public boolean parkVehicle() {
+	public boolean parkVehicle(Car car) {
 		if (parkingSlots.isAvailable()) {
-			parkingSlots.parkACar();
+			parkingSlots.parkACar(car);
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	public boolean unParkVehicle() {
-		if (parkingSlots.isEmpty()) {
+	public boolean unParkVehicle(Car car) {
+		if (parkingSlots.isFullyEmpty()) {
 			return false;
 		} else {
-			parkingSlots.unParkACar();
+			parkingSlots.unParkACar(car);
 			return true;
 		}
+	}
+
+	public ParkingSlots getParkingSlot() {
+		return this.parkingSlots;
 	}
 }

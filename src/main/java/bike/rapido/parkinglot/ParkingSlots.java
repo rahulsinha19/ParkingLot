@@ -1,19 +1,24 @@
 package bike.rapido.parkinglot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 class ParkingSlots {
 	private int availableSlots;
-	private int totalSlots;
+	private final int totalSlots;
 
-	private static ArrayList<Observer> registeredObserversForNotifyingLotIsFull;
-	private static ArrayList<Observer> registeredObserversForNotifyingLotHasSpaceAgain;
+	private final ArrayList<Observer> registeredObserversForNotifyingLotIsFull;
+	private final ArrayList<Observer> registeredObserversForNotifyingLotHasSpaceAgain;
 
-	public static void registerForNotifyingLotIsFull(Observer observer) {
+	private final HashMap<Integer, Car> carParkedDetails;
+	private final HashMap<Car, Integer> carParkedDetails2;
+
+	public void registerForNotifyingLotIsFull(Observer observer) {
 		registeredObserversForNotifyingLotIsFull.add(observer);
 	}
 
-	public static void registerForNotifyingWhenLotHasSpaceAgain(ParkingLotOwner parkingLotOwner) {
+	public void registerForNotifyingWhenLotHasSpaceAgain(ParkingLotOwner parkingLotOwner) {
 		registeredObserversForNotifyingLotHasSpaceAgain.add(parkingLotOwner);
 	}
 
@@ -23,6 +28,12 @@ class ParkingSlots {
 
 		registeredObserversForNotifyingLotIsFull = new ArrayList<>();
 		registeredObserversForNotifyingLotHasSpaceAgain = new ArrayList<>();
+
+		this.carParkedDetails = new HashMap<Integer, Car>();
+		for (int count = 0; count < totalSlots; count++) {
+			carParkedDetails.put(count, null);
+		}
+		this.carParkedDetails2 = new HashMap<Car, Integer>();
 	}
 
 	private void decrementSlots() {
@@ -34,49 +45,23 @@ class ParkingSlots {
 	}
 
 	public boolean isAvailable() {
-		if (this.availableSlots > 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return this.availableSlots > 0;
 	}
 
-	public boolean isEmpty() {
-		if (this.availableSlots == totalSlots) {
-			return true;
-		} else {
-			return false;
-		}
+	public boolean isFullyEmpty() {
+		return this.availableSlots == totalSlots;
 	}
 
-	public void parkACar() {
-		decrementSlots();
-		if (isFull()) {
-			notifyObserversWhenLotIsFull();
-		}
-	}
-
-	static void notifyObserversWhenLotIsFull() {
+	public void notifyObserversWhenLotIsFull() {
 		for (Observer observer : registeredObserversForNotifyingLotIsFull) {
 			observer.notifyObserverWhenLotIsFull();
 		}
 	}
 
-	static void notifyObserversWhenLotHasSpaceAgain() {
-		System.out.println(registeredObserversForNotifyingLotHasSpaceAgain.get(0));
+	public void notifyObserversWhenLotHasSpaceAgain() {
 		for (Observer observer : registeredObserversForNotifyingLotHasSpaceAgain) {
 
 			observer.notifyObserverWhenLotHasSpaceAgain();
-		}
-	}
-
-	public void unParkACar() {
-		if (isFull()) {
-
-			incrementSlots();
-			notifyObserversWhenLotHasSpaceAgain();
-		} else {
-			incrementSlots();
 		}
 	}
 
@@ -84,4 +69,56 @@ class ParkingSlots {
 		return this.availableSlots == 0;
 	}
 
+	public boolean parkACar(Car car) {
+		if (isFull()) {
+			return false;
+		}
+
+		int availableSlot = getEmptySlotFromMap();
+		if (availableSlot == -1) {
+			return false;
+		}
+
+		carParkedDetails.put(availableSlot, car);
+		carParkedDetails2.put(car, availableSlot);
+		decrementSlots();
+		if (isFull()) {
+			notifyObserversWhenLotIsFull();
+		}
+		return true;
+	}
+
+	public boolean getCar(Car car) {
+		return carParkedDetails2.containsKey(car) ;
+	}
+
+	public boolean unParkACar(Car car) {
+		if (isFullyEmpty()) {
+			return false;
+		}
+		int carParkedSlotId = carParkedDetails2.get(car);
+		System.out.println("================================== : " + carParkedSlotId);
+		carParkedDetails2.remove(car);
+		carParkedDetails.put(carParkedSlotId, null);
+		if (isFull()) {
+			notifyObserversWhenLotHasSpaceAgain();
+		}
+
+		incrementSlots();
+		return true;
+	}
+
+	private int getEmptySlotFromMap() {
+		for (Map.Entry<Integer, Car> entry : carParkedDetails.entrySet()) {
+			if (entry.getValue() == null) {
+				return entry.getKey();
+			}
+		}
+		return -1;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 }
