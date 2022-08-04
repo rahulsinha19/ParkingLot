@@ -19,11 +19,11 @@ class ParkingSlots {
         registeredObserversForNotifyingLotIsFull = new ArrayList<>();
         registeredObserversForNotifyingLotHasSpaceAgain = new ArrayList<>();
 
-        this.carParkedSlotDetails = new HashMap<Integer, Car>();
+        this.carParkedSlotDetails = new HashMap<>();
         for (int count = 0; count < totalSlots; count++) {
             carParkedSlotDetails.put(count, null);
         }
-        this.carUnParkedDLotsDetails = new HashMap<Car, Integer>();
+        this.carUnParkedDLotsDetails = new HashMap<>();
     }
 
     public void registerForNotifyingLotIsFull(Observer observer) {

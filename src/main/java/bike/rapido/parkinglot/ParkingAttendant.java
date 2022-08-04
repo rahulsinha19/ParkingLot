@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParkingAttendant {
-    private final int parkingSlotAreaId;
     List<ParkingSlots> parkingSlots;
 
     ParkingAttendant(int totalLots, int totalSlots) {
@@ -12,17 +11,7 @@ public class ParkingAttendant {
         for (int count = 0; count < totalLots; count++) {
             parkingSlots.add(new ParkingSlots(totalSlots));
         }
-        this.parkingSlotAreaId = 0;
     }
-
-    // public boolean parkTheCar(Car car) {
-    // for (ParkingSlots ele : parkingSlots) {
-    // if (ele.isAvailable()) {
-    // return ele.parkACar(car);
-    // }
-    // }
-    // return false;
-    // }
 
     public boolean parkTheCar(Car car) {
         int lotIdToParkCarIn = getParkingSlotAreaIdWithMinimumCarsParked();
