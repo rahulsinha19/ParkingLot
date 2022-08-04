@@ -3,12 +3,12 @@ package bike.rapido.parkinglot;
 public class ParkingLotOwner implements Observer {
     private String signBoard;
 
-    public void setSignBoard(String signBoard) {
-        this.signBoard = signBoard;
-    }
-
     public String getSignBoard() {
         return signBoard;
+    }
+
+    public void setSignBoard(String signBoard) {
+        this.signBoard = signBoard;
     }
 
     public void putFullSignBoard() {

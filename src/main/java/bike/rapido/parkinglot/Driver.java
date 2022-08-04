@@ -1,7 +1,7 @@
 package bike.rapido.parkinglot;
 
 public class Driver {
-    private ParkingSlots parkingSlots;
+    private final ParkingSlots parkingSlots;
 
     Driver(final int totalSlots) {
         this.parkingSlots = new ParkingSlots(totalSlots);

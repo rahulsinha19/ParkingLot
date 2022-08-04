@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParkingAttendant {
+    private final int parkingSlotAreaId;
     List<ParkingSlots> parkingSlots;
 
     ParkingAttendant(int totalLots, int totalSlots) {
@@ -11,15 +12,22 @@ public class ParkingAttendant {
         for (int count = 0; count < totalLots; count++) {
             parkingSlots.add(new ParkingSlots(totalSlots));
         }
+        this.parkingSlotAreaId = 0;
     }
 
+    // public boolean parkTheCar(Car car) {
+    // for (ParkingSlots ele : parkingSlots) {
+    // if (ele.isAvailable()) {
+    // return ele.parkACar(car);
+    // }
+    // }
+    // return false;
+    // }
+
     public boolean parkTheCar(Car car) {
-        for (ParkingSlots ele : parkingSlots) {
-            if (ele.isAvailable()) {
-                return ele.parkACar(car);
-            }
-        }
-        return false;
+        int lotIdToParkCarIn = getParkingSlotAreaIdWithMinimumCarsParked();
+        ParkingSlots parkCarInSlot = parkingSlots.get(lotIdToParkCarIn);
+        return parkCarInSlot.parkACar(car);
     }
 
     public boolean getEmptySlots() {
@@ -32,10 +40,9 @@ public class ParkingAttendant {
     }
 
     public boolean unParkTheCar(Car car) {
-        for (ParkingSlots ele : parkingSlots) {
+        for (ParkingSlots ele : this.parkingSlots) {
             if (ele.getCar(car)) {
-                ele.unParkACar(car);
-                return true;
+                return ele.unParkACar(car);
             }
         }
         return false;
@@ -45,15 +52,32 @@ public class ParkingAttendant {
 
         for (int count = 0; count < parkingSlots.size(); count++) {
             if (parkingSlots.get(count).getCar(car)) {
-                // return count,
+
                 int[] parkingSlotDetails = new int[2];
-                Integer slotId = parkingSlots.get(count).getSlodIdWhereCarIsParked(car);
+                int slotId = parkingSlots.get(count).getSlotIdWhereCarIsParked(car);
+
                 parkingSlotDetails[0] = count;
                 parkingSlotDetails[1] = slotId;
+
                 return parkingSlotDetails;
             }
         }
         return new int[2];
+    }
+
+    private int getParkingSlotAreaIdWithMinimumCarsParked() {
+        int parkingSlotId = 0;
+        int carsParkedInASlot = Integer.MIN_VALUE;
+
+        for (int count = 0; count < parkingSlots.size(); ++count) {
+            int carsParkedInCurrentSlot = parkingSlots.get(count).getEmptySlots();
+
+            if (carsParkedInASlot < carsParkedInCurrentSlot) {
+                carsParkedInASlot = carsParkedInCurrentSlot;
+                parkingSlotId = count;
+            }
+        }
+        return parkingSlotId;
     }
 
 }

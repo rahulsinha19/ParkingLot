@@ -5,22 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 class ParkingSlots {
-    private int availableSlots;
     private final int totalSlots;
-
     private final ArrayList<Observer> registeredObserversForNotifyingLotIsFull;
     private final ArrayList<Observer> registeredObserversForNotifyingLotHasSpaceAgain;
-
     private final HashMap<Integer, Car> carParkedSlotDetails;
-    private final HashMap<Car, Integer> carUnParkedDlotsDetails;
-
-    public void registerForNotifyingLotIsFull(Observer observer) {
-        registeredObserversForNotifyingLotIsFull.add(observer);
-    }
-
-    public void registerForNotifyingWhenLotHasSpaceAgain(ParkingLotOwner parkingLotOwner) {
-        registeredObserversForNotifyingLotHasSpaceAgain.add(parkingLotOwner);
-    }
+    private final HashMap<Car, Integer> carUnParkedDLotsDetails;
+    private int availableSlots;
 
     public ParkingSlots(int totalSlots) {
         this.availableSlots = totalSlots;
@@ -33,7 +23,15 @@ class ParkingSlots {
         for (int count = 0; count < totalSlots; count++) {
             carParkedSlotDetails.put(count, null);
         }
-        this.carUnParkedDlotsDetails = new HashMap<Car, Integer>();
+        this.carUnParkedDLotsDetails = new HashMap<Car, Integer>();
+    }
+
+    public void registerForNotifyingLotIsFull(Observer observer) {
+        registeredObserversForNotifyingLotIsFull.add(observer);
+    }
+
+    public void registerForNotifyingWhenLotHasSpaceAgain(ParkingLotOwner parkingLotOwner) {
+        registeredObserversForNotifyingLotHasSpaceAgain.add(parkingLotOwner);
     }
 
     private void decrementSlots() {
@@ -80,7 +78,7 @@ class ParkingSlots {
         }
 
         carParkedSlotDetails.put(availableSlot, car);
-        carUnParkedDlotsDetails.put(car, availableSlot);
+        carUnParkedDLotsDetails.put(car, availableSlot);
         decrementSlots();
         if (isFull()) {
             notifyObserversWhenLotIsFull();
@@ -89,14 +87,13 @@ class ParkingSlots {
     }
 
     public boolean getCar(Car car) {
-        return carUnParkedDlotsDetails.containsKey(car);
+        return carUnParkedDLotsDetails.containsKey(car);
     }
 
     public boolean unParkACar(Car car) {
         if (isFullyEmpty()) {
             return false;
         }
-
         getSlotIdAndRemoveCarFromSlot(car);
 
         if (isFull()) {
@@ -108,8 +105,8 @@ class ParkingSlots {
     }
 
     private void getSlotIdAndRemoveCarFromSlot(Car car) {
-        int carParkedSlotId = getSlodIdWhereCarIsParked(car);
-        carUnParkedDlotsDetails.remove(car);
+        int carParkedSlotId = getSlotIdWhereCarIsParked(car);
+        carUnParkedDLotsDetails.remove(car);
         carParkedSlotDetails.put(carParkedSlotId, null);
     }
 
@@ -122,13 +119,16 @@ class ParkingSlots {
         return -1;
     }
 
-    public int getSlodIdWhereCarIsParked(Car car) {
-        int carParkedSlotId = carUnParkedDlotsDetails.get(car);
-        return carParkedSlotId;
+    public int getSlotIdWhereCarIsParked(Car car) {
+        return carUnParkedDLotsDetails.get(car);
     }
 
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    public int getEmptySlots() {
+        return this.availableSlots;
     }
 }
