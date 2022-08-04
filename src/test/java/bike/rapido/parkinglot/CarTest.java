@@ -6,18 +6,18 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 public class CarTest {
-	public static final String CAR_NUMBER = "Test Car 1234";
-	private Car car;
+    public static final String CAR_NUMBER = "Test Car 1234";
+    private Car car;
 
-	@Before
-	public void setup() {
-		car = new Car(CAR_NUMBER);
-	}
+    @Before
+    public void setup() {
+        car = new Car(CAR_NUMBER);
+    }
 
-	@Test
-	public void shouldReturnDetailsOfCar() {
-		final String receivedCarDetails = car.toString();
+    @Test
+    public void shouldReturnDetailsOfCar() {
+        final String receivedCarDetails = car.toString();
 
-		assertTrue(receivedCarDetails.contains(CAR_NUMBER));
-	}
+        assertTrue(receivedCarDetails.contains(CAR_NUMBER));
+    }
 }
